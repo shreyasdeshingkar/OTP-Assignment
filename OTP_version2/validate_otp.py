@@ -64,5 +64,5 @@ if __name__ == "__main__":
     sendOTPOverEmail(email, otp)
 
     
-    mobile = "8625839941"
+    mobile = "8625839939"
     sendOTPOverMobile(mobile, otp)
