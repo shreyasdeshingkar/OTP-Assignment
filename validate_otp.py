@@ -1,17 +1,16 @@
 import random
 import smtplib
 from twilio.rest import Client
-import keys  
 
-class OTPManager:
-    def _init_(self):
-        pass
-
-    def generate_otp(self):
+class OTPGenerator:
+    @staticmethod
+    def generate_otp():
         return ''.join([str(random.randint(0, 9)) for i in range(6)])
 
-    def send_otp_over_email(self, email, otp):
-        if self.validate_email(email):
+class EmailSender:
+    @staticmethod
+    def send_otp(email, otp):
+        if EmailValidator.validate_email(email):
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
             server.login('shreyasdeshingkar@gmail.com', 'muacwkbygeasmtow')
@@ -22,8 +21,10 @@ class OTPManager:
         else:
             print("Invalid email address.")
 
-    def send_otp_over_mobile(self, mobile, otp):
-        if self.validate_mobile(mobile):
+class MobileSender:
+    @staticmethod
+    def send_otp(mobile, otp):
+        if MobileValidator.validate_mobile(mobile):
             client = Client(keys.account_sid, keys.auth_token)
             msg = client.messages.create(
                 body=f'Hello, your OTP is {otp}\nPlease do not share the OTP with anyone.'
@@ -35,20 +36,21 @@ class OTPManager:
         else:
             print("Invalid mobile number.")
 
-    def validate_email(self, email):
+class EmailValidator:
+    @staticmethod
+    def validate_email(email):
         return "@gmail" in email and "." in email
 
-    def validate_mobile(self, mobile):
+class MobileValidator:
+    @staticmethod
+    def validate_mobile(mobile):
         return len(mobile) == 10 and mobile.isdigit()
 
-
 if _name_ == "_main_":
-    otp_manager = OTPManager()
-
-    otp = otp_manager.generate_otp()
+    otp = OTPGenerator.generate_otp()
 
     email = "manisha.deshingkar@gmail.com"
-    otp_manager.send_otp_over_email(email, otp)
+    EmailSender.send_otp(email, otp)
 
     mobile = "8625839939"
-    otp_manager.send_otp_over_mobile(mobile, otp)
+    MobileSender.send_otp(mobile, otp)
